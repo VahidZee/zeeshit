@@ -22,7 +22,7 @@
 //Constant Values
 //Paths
 #define SIMPLE_INPUT_PATH "../simpleInput/"
-#define RAW_IMAGES_PATH "../input/RAW_IMAGES/"
+#define RAW_IMAGES_PATH "../../input/RAW_IMAGES/"
 #define PAN_ONLY_PATH "../input/PAN_ONLY/"
 #define EXP_ONLY_PATH
 #define CVV2_ONLY_PATH
@@ -33,9 +33,9 @@ int main(int argc, char *argv[]) {
     //Initializes
 #if TEST
     //GUI Windows
-    cv::namedWindow("imageDisplayer", cv::WINDOW_KEEPRATIO);
-    cv::namedWindow("srcDisplayer", cv::WINDOW_KEEPRATIO);
-    cv::namedWindow("resultImage", cv::WINDOW_KEEPRATIO);
+//    cv::namedWindow("imageDisplayer", cv::WINDOW_KEEPRATIO);
+//    cv::namedWindow("srcDisplayer", cv::WINDOW_KEEPRATIO);
+//    cv::namedWindow("resultImage", cv::WINDOW_KEEPRATIO);
 #endif
 
     //Initialize
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 
 #if TEST
     //Loading Tests
-    for (int i = 21; i <= INPUT_COUNT; i++) {
+    for (int i = 2; i <= INPUT_COUNT; i++) {
         //Reading Image
         cv::Mat srcImage = cv::imread(RAW_IMAGES_PATH + std::to_string(i) + ".jpg", cv::IMREAD_COLOR);
 
@@ -81,7 +81,6 @@ int main(int argc, char *argv[]) {
 
 #if TEST
         cv::imshow("srcDisplayer", cardImageResized);
-        cv::waitKey(0);
 #endif
 
         //TODO blur shit

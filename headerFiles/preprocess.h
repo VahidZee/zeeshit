@@ -28,9 +28,9 @@
     //Clustering & shit
     cv::Mat kmeansParts( cv::Mat& image , int wPartsCount , int hPartsCount , int sliderValue  , int level = -1  );
 
-    cv::Mat extractColorBlack( cv::Mat& resizedCardArea);
+    cv::Mat extractColorBlack( cv::Mat& resizedCardArea , int blurSize = 0  , bool denoise  = true );
 
-    cv::Mat extractColorRed(cv::Mat& resizedCardArea);
+    cv::Mat extractColorRed(cv::Mat& resizedCardArea ,  int blurSize = 0 , bool denoise = true );
 
-
+    cv::Mat extractColorStrip(cv::Mat resizedCardArea , int strip , int stripsCount = 8  , int blurSize = 0 , bool denoise = true );
 #endif //CARDREADER_PREPROCESS_H

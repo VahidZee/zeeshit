@@ -241,13 +241,43 @@
     }
 
     //Color Extractions
-    cv::Mat extractColorBlack( cv::Mat& resizedCardArea){
-
+    cv::Mat extractColorBlack( cv::Mat& resizedCardArea , int blurSize , bool denoise ){
+        cv::Mat mask;
+        cv::Mat hsv;
+        if( blurSize )
+            cv::blur( resizedCardArea  , resizedCardArea  , cv::Size(blurSize , blurSize) );
+        cv::cvtColor( resizedCardArea , hsv , cv::COLOR_BGR2HSV );
+        cv::inRange( hsv , cv::Scalar( 0 , 0 , 0 ) , cv::Scalar(180 , 255 , 255 * 0.17 )  , mask );
+        if( denoise )
+            cv::fastNlMeansDenoising( mask , mask , 10 , 3 , 7  );
+        return mask;
     }
 
-    cv::Mat extractColorRed(cv::Mat& resizedCardArea) {
-
+    cv::Mat extractColorRed(cv::Mat& resizedCardArea , int blurSize , bool denoise) {
+        cv::Mat mask1;
+        cv::Mat mask2;
+        cv::Mat mask;
+        cv::Mat hsv;
+        if( blurSize )
+            cv::blur( resizedCardArea  , resizedCardArea  , cv::Size(blurSize , blurSize) );
+        cv::cvtColor( resizedCardArea , hsv , cv::COLOR_BGR2HSV );
+        cv::inRange( hsv , cv::Scalar( 0 , 255 * 0.20 , 255 * 0.30 ) , cv::Scalar( 10 , 255 , 255  )  , mask1 );
+        cv::inRange( hsv , cv::Scalar( 170 , 255 * 0.20 , 255 * 0.30 ) , cv::Scalar(180 , 255 , 255  )  , mask2 );
+        mask = mask1 | mask2;
+        if( denoise )
+            cv::fastNlMeansDenoising( mask , mask , 10 , 3 , 7  );
+        return mask;
     }
 
-
+    cv::Mat extractColorStrip(cv::Mat resizedCardArea , int strip , int stripsCount  , int blurSize , bool denoise ) {
+        cv::Mat mask;
+        cv::Mat hsv;
+        if( blurSize )
+            cv::blur( resizedCardArea  , resizedCardArea  , cv::Size(blurSize , blurSize) );
+        cv::cvtColor( resizedCardArea , hsv , cv::COLOR_BGR2HSV );
+        cv::inRange( hsv , cv::Scalar( 10 + ( strip - 1 ) * ( 160.0 /stripsCount )  , 255 * 0.20 , 255 * 0.30 ) , cv::Scalar(10 + strip * ( 160.0 /stripsCount ) , 255 , 255  )  , mask );
+        if( denoise )
+            cv::fastNlMeansDenoising( mask , mask , 30 , 3 , 7  );
+        return mask;
+    }
 
