@@ -1,5 +1,4 @@
 //
-// Created by Vahid Zee on 9/23/18.
 //
 
 #ifndef CARDREADER_OCRPROCESS_H
@@ -9,6 +8,9 @@
     //Standard Libraries
     #include <iostream>
     #include <string>
+    #include <math.h>
+    #include <vector>
+
 
     //OpenCv
     #include <opencv2/opencv.hpp>
@@ -22,18 +24,19 @@
 //Structures And Type Definitions
     typedef struct {
         bool ok;
-        char panNumber[16];
-        char* expDate;
-        char* cvv2;
+        bool dateOk;
+        int mainY;
+        int panNumber[16]={10};
+        char expDate[5]="";
     } cardData;
 
 
-//Functions
+//Functionsk
     //Inits
     void initializeOCR();
 
     //OCR Main Functions
-    cardData getData( cv::Mat resizedCardAreaImage );
+    cardData getData( cv::Mat resizedCardAreaImage,cardData& cardData1 );
 
 
 #endif //CARDREADER_OCRPROCESS_H

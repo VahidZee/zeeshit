@@ -1,5 +1,4 @@
 //
-// Created by Vahid Zee on 9/23/18.
 //
 
 #ifndef CARDREADER_PREPROCESS_H
@@ -32,5 +31,4 @@
 
     cv::Mat extractColorRed(cv::Mat& resizedCardArea ,  int blurSize = 0 , bool denoise = true );
 
-    cv::Mat extractColorStrip(cv::Mat resizedCardArea , int strip , int stripsCount = 8  , int blurSize = 0 , bool denoise = true );
-#endif //CARDREADER_PREPROCESS_H
+#endif

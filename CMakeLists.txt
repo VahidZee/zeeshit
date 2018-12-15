@@ -40,6 +40,7 @@ target_link_libraries(cardReader tesseract)
 target_link_libraries(cardReader ${Tesseract_LIBS})
 
 find_package( PkgConfig REQUIRED)
+find_library(TESSERACT REQUIRED)
 
 pkg_search_module( TESSERACT REQUIRED tesseract )
 

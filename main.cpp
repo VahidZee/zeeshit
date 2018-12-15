@@ -8,45 +8,35 @@
 
 //Project Libraries
 #include "headerFiles/preprocess.h"
-
 #include "headerFiles/algorithms.h"
+#include "headerFiles/ocrprocess.h"
 
-//Defines
 //Handles
 #define TEST true
-#define CONSOLE_OUTPUT true
 
-//CV Loop Handles
-#define WAIT_KEY 0
-
-//Constant Values
-//Paths
-#define SIMPLE_INPUT_PATH "../simpleInput/"
-#define RAW_IMAGES_PATH "../../input/RAW_IMAGES/"
-#define PAN_ONLY_PATH "../input/PAN_ONLY/"
-#define EXP_ONLY_PATH
-#define CVV2_ONLY_PATH
+#define RAW_IMAGES_PATH "../input/"
 #define INPUT_COUNT 30
 
-int main(int argc, char *argv[]) {
+void printInfo(cardData data) {
+    std::cout << "EXTRACTED!!!!" << std::endl;
+    for (int j = 15; j >= 0; --j) {
 
-    //Initializes
-#if TEST
-    //GUI Windows
-//    cv::namedWindow("imageDisplayer", cv::WINDOW_KEEPRATIO);
-//    cv::namedWindow("srcDisplayer", cv::WINDOW_KEEPRATIO);
-//    cv::namedWindow("resultImage", cv::WINDOW_KEEPRATIO);
-#endif
+        std::cout << data.panNumber[j];
+    }
+    std::cout << std::endl;
+    std::cout << data.expDate << std::endl;
+}
+
+int main(int argc, char *argv[]) {
 
     //Initialize
     initializeOCR();
 
 #if TEST
     //Loading Tests
-    for (int i = 2; i <= INPUT_COUNT; i++) {
+    for (int i = 6; i <= INPUT_COUNT; i++) {
         //Reading Image
         cv::Mat srcImage = cv::imread(RAW_IMAGES_PATH + std::to_string(i) + ".jpg", cv::IMREAD_COLOR);
-
         if (srcImage.empty()) {
             std::cout << "image : " << i << "couldn't be found\n";
             continue;
@@ -71,9 +61,8 @@ int main(int argc, char *argv[]) {
         //Level One : raw Image Trimming And Force Resize
 
 #if TEST
-        std::cout << "\033[0;32Level 1: \033[0m \nTrimming And Force resizing Image #" << i << " :\n";
+        std::cout << "\nExtracting PAN from Image #" << i << " :\n#####################\n";
 #endif
-
         cv::Mat cardArea = trimCardArea(srcImage);
         cv::Mat cardImageResized = forceResizeCardAreaImage(cardArea);
         srcImage.deallocate();
@@ -83,34 +72,35 @@ int main(int argc, char *argv[]) {
         cv::imshow("srcDisplayer", cardImageResized);
 #endif
 
-        //TODO blur shit
-//            cv::blur( cardImageResized , cardImageResized , cv::Size( 3 , 3 )  );
-
-        cardData data;
-        data = rawProcess(cardImageResized);
-
-        std::cout << data.ok;
-        if (data.ok) {
+        cardData data = rawProcess(cardImageResized);
+        if (data.ok && data.dateOk) {
 #if TEST
-            //TODO
-            std::cout << data.panNumber << "shit\n";
+            printInfo(data);
+            cv::waitKey(0);
             continue;
 #endif
         }
-        data = processColors(cardImageResized);
-        if (data.ok) {
+        data = processBlack(cardImageResized, data);
+        if (data.ok && data.dateOk) {
 #if TEST
-            //TODO
-            std::cout << data.panNumber;
+            printInfo(data);
+            cv::waitKey(0);
             continue;
 #endif
         }
-
-        data = processKmeans(cardImageResized);
+        data = processKmeans(cardImageResized, data, 4, 0);
+        if (data.ok && data.dateOk) {
+#if TEST
+            printInfo(data);
+            cv::waitKey(0);
+            continue;
+#endif
+        }
+        data = invertColors(cardImageResized, data);
         if (data.ok) {
 #if TEST
-            //TODO
-            std::cout << data.panNumber;
+            printInfo(data);
+            cv::waitKey(0);
             continue;
 #endif
         }
